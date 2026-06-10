@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Spoova\\Ghost\\' => array($baseDir . '/src'),
+    'Ghost\\' => array($baseDir . '/src'),
 );
