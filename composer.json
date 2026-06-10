@@ -1,0 +1,21 @@
+{
+    "name": "spoova/ghost",
+    "description": "A GhostProxy class for anonymous objects.",
+    "type": "metapackage",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Spoova\\Ghost\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "teymzz",
+            "email": "teymss@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "spoova/mi": "*"
+    }
+}
