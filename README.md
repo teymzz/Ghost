@@ -27,11 +27,13 @@ It's a sophisticated dynamic proxy and handler routing system that unlocks sever
 Proxy object can be initialized in various ways. However the best is either to use a GhostFunction 
 or an array to initialize a class using GhostProxy as the final wrapper. 
 
-##### Initializing with GhostFunction (Not Recommended) 
+##### Initializing GhostFunction Methods (Not Recommended) 
 This approach does not support IDEs. Hence it is not recommended.
 
 ```PHP
 <?php
+
+include('vendor/autoload');
 
 use Ghost\GhostFunction;
 
@@ -51,10 +53,42 @@ $GhostFunction->bar(function(){
 
 $GhostFunction->foo(); // This is foo
 $GhostFunction->bar(); // This is bar
+
+$GhostFunction->ghosts(GhostFunction::methods); // ['foo','bar']
+```
+
+##### Initializing GhostFunction Properties (Not Recommended) 
+GhostFunction object can also define properties using inner array with keys as property names 
+with each having its own immutable values. However, properties with array values are best assigned using methods.
+
+```PHP
+<?php
+
+include('vendor/autoload');
+
+use Ghost\GhostFunction;
+
+$method_and_property = ['foo',['bar'=>'bar_value']];
+$GhostFunction = new GhostFunction($method_and_property);
+
+// must first define what foo methods does:
+$GhostFunction->foo(function(){
+  print "This is foo";
+});
+
+// Now call the methods
+
+$GhostFunction->foo(); // This is foo
+print $GhostFunction->bar; // bar_value
+
+var_dump($GhostFunction->ghosts(GhostFunction::methods)); // view ghost methods e.g ['foo']
+
+var_dump($GhostFunction->ghosts(GhostFunction::properties)); // view ghost properties ['bar']
 ```
 
 ##### Initializing with GhostProxy (Recommended) 
-There are difference ways to initialize with GhostProxy. These are shown below:
+GhostProxy is designed to flow well with IDEs. There are different ways to initialize a 
+GhostProxy object. These are shown below:
 
 ###### Initialization with arrays
 
@@ -76,6 +110,7 @@ abstract class SomeClass{
       $proxy = $this->proxy; // assign proxy to local variable for easy access
       $this->ghostInit(); // initialize custom class
       $this->proxy = $proxy; // re-assign proxy to ensure it is not lost during initialization;
+      $this->proxy->ghosts(GhostFunction::methods); // ['foobaz']
   }
 
   public function foo() {
@@ -84,6 +119,10 @@ abstract class SomeClass{
 
   public function bar() {
     print 'This is bar';
+  }
+
+  public function ghostProperties() : array {
+    return $this->proxy->ghosts(GhostFunction::properties);
   }
 
 }
@@ -98,7 +137,7 @@ include_once('SomeClass.php');
 use Ghost\GhostProxy;
 use Ghost\GhostDraft;
 
-GhostProxy::new([], fn(GhostDraft $draft) => new class($draft) extends SomeClass {});
+GhostProxy::new([['foobaz'=>'some_value']], fn(GhostDraft $draft) => new class($draft) extends SomeClass {});
 
 /** @var SomeClass $SomeClass */
 $SomeClass = GhostProxy::object(); // returns object of SomeClass;
@@ -106,6 +145,7 @@ $SomeClass = GhostProxy::object(); // returns object of SomeClass;
 // Now call the methods with IDE support.
 $SomeClass->foo(); // This is foo
 $SomeClass->bar(); // This is bar
+$SomeClass->ghostProperties(); // ['foobaz']
 ```
 
 ###### Initialization with GhostFunction
