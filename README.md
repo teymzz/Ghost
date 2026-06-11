@@ -255,7 +255,7 @@ class TestClass{
 
     $GhostFunction = new GhostFunction(['msg']); // initialized with method
 
-    $GhostFunction->msg( fn($user) => self::$text ); // define method's function
+    $GhostFunction->msg( fn($user) => self::$message.' '.$user ); // define method's function
 
     GhostProxy::new($GhostFunction, fn(GhostDraft $draft) => new class($draft) extends GhostMessenger {
 
@@ -295,13 +295,13 @@ use Ghost\GhostProxy;
 
 class TestClass{
 
-  private function $message = 'Hello '; 
+  private function $message = 'Hello'; 
 
   public function __construct() {
 
     $GhostFunction = new GhostFunction(['msg']); // initialized with method
 
-    $GhostFunction->msg( fn($user) => self::$text ); // define method's function
+    $GhostFunction->msg( fn($user) => self::$message.' '.$user ); // define method's function
 
     GhostProxy::new($GhostFunction, fn(GhostDraft $draft) => new class($draft) extends GhostMessenger {
 
